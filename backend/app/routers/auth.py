@@ -15,6 +15,7 @@ from app.core.security import (
 )
 from app.models.person import Person, PersonCreate, PersonResponse, PersonUpdate
 from app.services.email_service import send_verification_email, send_welcome_email
+from app.core.config import settings
 
 router = APIRouter(prefix="/auth", tags=["Autenticación"])
 
@@ -62,7 +63,7 @@ async def register(
         last_name=user_data.last_name,
         email=user_data.email,
         password=hashed_password,
-        is_active=False,
+        is_active=settings.AUTO_VERIFY_USERS,
         role_id=2,
         country_id=user_data.country_id,
         created_at=datetime.utcnow(),
@@ -73,16 +74,20 @@ async def register(
     session.commit()
     session.refresh(new_user)
 
-    verification_token = create_verification_token(new_user.email)
-    background_tasks.add_task(
-        send_verification_email,
-        new_user.email,
-        new_user.first_name,
-        verification_token
-    )
+    if settings.AUTO_VERIFY_USERS:
+        message = "Usuario registrado exitosamente. Ya puedes iniciar sesión."
+    else:
+        verification_token = create_verification_token(new_user.email)
+        background_tasks.add_task(
+            send_verification_email,
+            new_user.email,
+            new_user.first_name,
+            verification_token
+        )
+        message = "Usuario registrado exitosamente. Por favor verifica tu correo electrónico."
 
     return RegisterResponse(
-        message="Usuario registrado exitosamente. Por favor verifica tu correo electrónico.",
+        message=message,
         user=PersonResponse(
             id=new_user.id,
             first_name=new_user.first_name,

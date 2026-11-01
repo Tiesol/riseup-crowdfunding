@@ -17,6 +17,8 @@ class Settings:
     MAIL_FROM: str = os.getenv("MAIL_FROM", "noreply@riseup.com")
     MAIL_FROM_NAME: str = os.getenv("MAIL_FROM_NAME", "RiseUp Platform")
     BREVO_API_KEY: str = os.getenv("BREVO_API_KEY", "")
+    # Modo demo: las cuentas nuevas quedan activas sin verificar el correo
+    AUTO_VERIFY_USERS: bool = os.getenv("AUTO_VERIFY_USERS", "false").lower() == "true"
 
     FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:8080")
 

@@ -82,13 +82,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
 
       console.log('Registro exitoso:', data);
-      showSuccess('¡Registro exitoso! Por favor verifica tu email antes de iniciar sesión. Revisa tu bandeja de entrada.');
+      const isActive = data.user && data.user.is_active;
+      showSuccess(isActive
+        ? '¡Registro exitoso! Ya puedes iniciar sesión.'
+        : '¡Registro exitoso! Por favor verifica tu email antes de iniciar sesión. Revisa tu bandeja de entrada.');
 
       registerForm.reset();
 
       setTimeout(() => {
         window.location.href = './login.html';
-      }, 5000);
+      }, isActive ? 2000 : 5000);
     } catch (error) {
       showError(error.message || 'Error al registrarse');
 
