@@ -51,7 +51,7 @@ function cargarInfoCampania() {
     })
     .catch(function(error) {
         console.error('Error:', error);
-        mostrarMensaje('Error al cargar la campaña', 'error');
+        mostrarMensaje('Error al cargar el producto', 'error');
     });
 }
 
@@ -65,7 +65,7 @@ function mostrarInfoCampania(campania) {
         '<div class="detalle-info">' +
             '<div class="detalle-item"><label>Categoría</label><span>' + (campania.category_name || 'N/A') + '</span></div>' +
             '<div class="detalle-item"><label>Meta</label><span>S/. ' + campania.goal_amount + '</span></div>' +
-            '<div class="detalle-item"><label>Recaudado</label><span>S/. ' + campania.current_amount + '</span></div>' +
+            '<div class="detalle-item"><label>Vendido</label><span>S/. ' + campania.current_amount + '</span></div>' +
             '<div class="detalle-item"><label>Fecha Límite</label><span>' + (campania.expiration_date || 'N/A') + '</span></div>' +
             '<div class="detalle-item"><label>Estado</label><span class="estado ' + estadoClase + '">' + estadoTexto + '</span></div>' +
         '</div>' +
@@ -256,14 +256,14 @@ function aprobar() {
         return response.json();
     })
     .then(function(data) {
-        mostrarMensaje('Campaña aprobada correctamente', 'exito');
+        mostrarMensaje('Producto aprobado correctamente', 'exito');
         setTimeout(function() {
             window.location.href = './admin-projects.html';
         }, 1500);
     })
     .catch(function(error) {
         console.error('Error:', error);
-        mostrarMensaje('Error al aprobar la campaña', 'error');
+        mostrarMensaje('Error al aprobar el producto', 'error');
     });
 }
 
@@ -281,14 +281,14 @@ function rechazar() {
         return response.json();
     })
     .then(function(data) {
-        mostrarMensaje('Campaña rechazada exitosamente', 'exito');
+        mostrarMensaje('Producto rechazado exitosamente', 'exito');
         setTimeout(function() {
             window.location.href = './admin-projects.html';
         }, 1500);
     })
     .catch(function(error) {
         console.error('Error:', error);
-        mostrarMensaje('Error al rechazar la campaña', 'error');
+        mostrarMensaje('Error al rechazar el producto', 'error');
     });
 }
 

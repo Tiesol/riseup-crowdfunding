@@ -16,7 +16,7 @@ export async function getPublicCampaigns(options = {}) {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.detail || 'Error al obtener campañas');
+      throw new Error(data.detail || 'Error al obtener productos');
     }
 
     return data;
@@ -32,7 +32,7 @@ export async function getFeaturedCampaigns(limit = 6) {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.detail || 'Error al obtener campañas destacadas');
+      throw new Error(data.detail || 'Error al obtener productos destacados');
     }
 
     return data;
@@ -48,7 +48,7 @@ export async function getCampaignDetail(campaignId) {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.detail || 'Error al obtener campaña');
+      throw new Error(data.detail || 'Error al obtener producto');
     }
 
     return data;
@@ -64,7 +64,7 @@ export async function getCampaignRewards(campaignId) {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.detail || 'Error al obtener recompensas');
+      throw new Error(data.detail || 'Error al obtener ofertas');
     }
 
     return data;
@@ -80,7 +80,7 @@ export async function getTopDonors(campaignId, limit = 5) {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.detail || 'Error al obtener donadores');
+      throw new Error(data.detail || 'Error al obtener compradores');
     }
 
     return data;

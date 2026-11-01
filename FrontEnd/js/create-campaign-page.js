@@ -22,7 +22,7 @@ function videoHandler() {
 function initQuill() {
   quill = new Quill('#quillEditor', {
     theme: 'snow',
-    placeholder: 'Describe tu campaña en detalle...',
+    placeholder: 'Describe tu producto en detalle...',
     modules: {
       toolbar: {
         container: [
@@ -278,7 +278,7 @@ async function loadCampaignRewards(campaignId) {
       renderRewards();
     }
   } catch (error) {
-    console.error('Error cargando recompensas:', error);
+    console.error('Error cargando ofertas:', error);
   }
 }
 
@@ -297,15 +297,15 @@ async function loadCampaignData(campaignId) {
       currentWorkflowStateId = campaign.workflow_state_id;
 
       if (currentWorkflowStateId !== 1 && currentWorkflowStateId !== 3) {
-        showError('Esta campaña no se puede editar en su estado actual');
+        showError('Este producto no se puede editar en su estado actual');
         setTimeout(() => {
           window.location.href = 'my-campaigns.html';
         }, 2000);
         return;
       }
 
-      document.querySelector('.page-title').textContent = 'Editar Campaña';
-      document.title = 'Editar Campaña - RiseUp';
+      document.querySelector('.page-title').textContent = 'Editar Producto';
+      document.title = 'Editar Producto - RiseUp';
 
       document.getElementById('campaignTitle').value = campaign.tittle || '';
       document.getElementById('shortDescription').value = campaign.description || '';
@@ -335,11 +335,11 @@ async function loadCampaignData(campaignId) {
         btnObs.classList.add('btn-obs-active');
       }
     } else {
-      showError('No se pudo cargar la campaña');
+      showError('No se pudo cargar el producto');
     }
   } catch (error) {
-    console.error('Error cargando campaña:', error);
-    showError('Error al cargar los datos de la campaña');
+    console.error('Error cargando producto:', error);
+    showError('Error al cargar los datos de el producto');
   }
 }
 
@@ -366,7 +366,7 @@ function addReward() {
   const imageUrl = document.getElementById('rewardImageUrl').value.trim();
 
   if (!title || !minAmount) {
-    showError('Ingresa título y monto mínimo para la recompensa');
+    showError('Ingresa título y monto mínimo para la oferta');
     return;
   }
 
@@ -537,7 +537,7 @@ async function saveCampaign(send) {
         const messages = err.detail.map(e => e.msg || e.message || 'Error de validación').join(', ');
         showError(messages);
       } else {
-        showError(err.detail || 'Error al guardar la campaña');
+        showError(err.detail || 'Error al guardar el producto');
       }
       return;
     }
@@ -592,8 +592,8 @@ async function saveCampaign(send) {
     }
 
     const msg = send
-      ? '¡Campaña enviada para revisión!'
-      : (editingCampaignId ? '¡Campaña actualizada!' : '¡Borrador guardado!');
+      ? '¡Producto enviado para revisión!'
+      : (editingCampaignId ? '¡Producto actualizado!' : '¡Borrador guardado!');
     showSuccess(msg);
     setTimeout(() => {
       window.location.href = 'my-campaigns.html';
@@ -654,12 +654,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   document.getElementById('btnObservations').addEventListener('click', async function() {
     if (!editingCampaignId) {
-      showError('Primero debes crear la campaña.');
+      showError('Primero debes crear el producto.');
       return;
     }
 
     if (currentWorkflowStateId !== 3) {
-      showError('Las observaciones solo están disponibles cuando tu campaña ha sido observada por un administrador.');
+      showError('Las observaciones solo están disponibles cuando tu producto ha sido observada por un administrador.');
       return;
     }
 

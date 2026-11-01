@@ -111,7 +111,7 @@ function createCampaignCard(campaign) {
           <div class="grid_progress_bar">
             <div class="grid_progress_fill" style="width: ${Math.min(progress, 100)}%"></div>
           </div>
-          <p class="grid_progress_text">${formatCurrency(campaign.current_amount)} de ${formatCurrency(campaign.goal_amount)} | ${progress.toFixed(0)}% financiado</p>
+          <p class="grid_progress_text">${formatCurrency(campaign.current_amount)} de ${formatCurrency(campaign.goal_amount)} | ${progress.toFixed(0)}% vendido</p>
         </div>
         <div class="campaign_grid_footer">
           <span class="grid_days_left">
@@ -149,7 +149,7 @@ function createCarouselCard(campaign) {
               <span class="progress_percentage">${progress.toFixed(0)}%</span>
               <span class="progress_funded">${formatCurrency(campaign.current_amount)} de ${formatCurrency(campaign.goal_amount)}</span>
             </div>
-            <a href="campaign-detail-logged.html?id=${campaign.id}" class="btn_view_campaign">Ver Campaña</a>
+            <a href="campaign-detail-logged.html?id=${campaign.id}" class="btn_view_campaign">Ver Producto</a>
           </div>
         </div>
       </div>
@@ -161,12 +161,14 @@ async function loadFeaturedCampaigns() {
   const carouselTrack = document.querySelector('.carousel_track');
   const indicatorsContainer = document.querySelector('.carousel_indicators');
 
+  carouselTrack.innerHTML = Skeleton.carouselCard();
+
   try {
     const response = await fetch(`${API_URL}/campaigns/featured?limit=5`);
     const campaigns = await response.json();
 
     if (campaigns.length === 0) {
-      carouselTrack.innerHTML = '<p style="text-align:center; padding: 2rem;">No hay campañas destacadas.</p>';
+      carouselTrack.innerHTML = '<p style="text-align:center; padding: 2rem;">No hay productos destacados.</p>';
       return;
     }
 
@@ -179,20 +181,15 @@ async function loadFeaturedCampaigns() {
     initCarousel(campaigns.length);
 
   } catch (error) {
-    console.error('Error cargando campañas destacadas:', error);
-    carouselTrack.innerHTML = '<p style="text-align:center; padding: 2rem; color: red;">Error al cargar campañas.</p>';
+    console.error('Error cargando productos destacados:', error);
+    carouselTrack.innerHTML = '<p style="text-align:center; padding: 2rem; color: red;">Error al cargar productos.</p>';
   }
 }
 
 async function loadPopularCampaigns() {
   const campaignsGrid = document.querySelector('.campaigns_grid');
 
-  campaignsGrid.innerHTML = `
-    <div class="loading_campaigns">
-      <i class="fa-solid fa-spinner fa-spin"></i>
-      <p>Cargando campañas...</p>
-    </div>
-  `;
+  Skeleton.showGrid(campaignsGrid, 6);
 
   try {
     const response = await fetch(`${API_URL}/campaigns/popular?limit=9`);
@@ -202,20 +199,21 @@ async function loadPopularCampaigns() {
       campaignsGrid.innerHTML = `
         <div class="no_campaigns">
           <i class="fa-solid fa-folder-open"></i>
-          <p>No hay campañas disponibles.</p>
+          <p>No hay productos disponibles.</p>
         </div>
       `;
       return;
     }
 
     campaignsGrid.innerHTML = campaigns.map(campaign => createCampaignCard(campaign)).join('');
+    campaignsGrid.removeAttribute('aria-busy');
 
   } catch (error) {
-    console.error('Error cargando campañas:', error);
+    console.error('Error cargando productos:', error);
     campaignsGrid.innerHTML = `
       <div class="error_campaigns">
         <i class="fa-solid fa-exclamation-triangle"></i>
-        <p>Error al cargar las campañas.</p>
+        <p>Error al cargar los productos.</p>
       </div>
     `;
   }

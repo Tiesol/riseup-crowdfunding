@@ -72,7 +72,7 @@ async function loadCampaignDetail() {
     }
 
     if (!response.ok) {
-      throw new Error('Campaña no encontrada');
+      throw new Error('Producto no encontrada');
     }
 
     currentCampaign = await response.json();
@@ -81,7 +81,7 @@ async function loadCampaignDetail() {
     await checkFavoriteStatus();
 
   } catch (error) {
-    console.error('Error cargando campaña:', error);
+    console.error('Error cargando producto:', error);
     window.location.href = './index-logged.html';
   }
 }
@@ -118,12 +118,12 @@ function renderCampaignDetail(campaign) {
 
   const creatorName = campaign.user_first_name
     ? `${campaign.user_first_name} ${campaign.user_last_name || ''}`
-    : 'Creador';
+    : 'Vendedor';
   document.querySelector('.creator_name').textContent = creatorName;
 
   const creatorAvatar = document.querySelector('.creator_avatar');
   if (campaign.user_profile_image_url) {
-    creatorAvatar.innerHTML = `<img src="${campaign.user_profile_image_url}" alt="${campaign.user_first_name || 'Creador'}">`;
+    creatorAvatar.innerHTML = `<img src="${campaign.user_profile_image_url}" alt="${campaign.user_first_name || 'Vendedor'}">`;
   }
 
   document.querySelector('.campaign_detail_title').textContent = campaign.tittle;
@@ -136,7 +136,7 @@ function renderCampaignDetail(campaign) {
 
   document.querySelector('.detail_progress_fill').style.width = `${Math.min(progress, 100)}%`;
   document.querySelector('.funding_text').textContent =
-    `${formatCurrency(campaign.current_amount)} de ${formatCurrency(campaign.goal_amount)} | ${progress.toFixed(0)}% financiado`;
+    `${formatCurrency(campaign.current_amount)} de ${formatCurrency(campaign.goal_amount)} | ${progress.toFixed(0)}% vendido`;
 
   const daysLeft = calculateDaysLeft(campaign.expiration_date);
   const daysElement = document.querySelector('.days_count');
@@ -149,7 +149,7 @@ function renderCampaignDetail(campaign) {
     descriptionContent.innerHTML = campaign.rich_text;
   } else {
     descriptionContent.innerHTML = `
-      <h3>Sobre el Proyecto</h3>
+      <h3>Sobre el Producto</h3>
       <p>${campaign.description || 'Sin descripción disponible'}</p>
     `;
   }
@@ -193,7 +193,7 @@ async function loadRewards() {
 
     renderRewards(rewards);
   } catch (error) {
-    console.error('Error cargando recompensas:', error);
+    console.error('Error cargando ofertas:', error);
   }
 }
 
@@ -201,7 +201,7 @@ function renderRewards(rewards) {
   const rewardsGrid = document.querySelector('.rewards_grid');
 
   if (!rewards || rewards.length === 0) {
-    rewardsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">Esta campaña aún no tiene recompensas.</p>';
+    rewardsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">Este producto aún no tiene ofertas.</p>';
     return;
   }
 
@@ -225,7 +225,7 @@ function renderRewards(rewards) {
       <div class="reward_card">
         <h3 class="reward_title">${reward.tittle}</h3>
         <div class="reward_image">
-          <img src="${reward.image_url || 'https://placehold.co/300x200/FF7A59/FFFFFF?text=Recompensa'}" alt="${reward.tittle}">
+          <img src="${reward.image_url || 'https://placehold.co/300x200/FF7A59/FFFFFF?text=Oferta'}" alt="${reward.tittle}">
         </div>
         <p class="reward_amount">${formatCurrency(reward.amount)}</p>
         <p class="reward_description">${reward.description || 'Sin descripción'}</p>
@@ -238,7 +238,7 @@ function renderRewards(rewards) {
 
 function showCannotClaimMessage(requiredAmount) {
   const needed = requiredAmount - userTotalDonated;
-  showMessage(`Necesitas donar $${needed.toFixed(2)} más para reclamar esta recompensa. Has donado $${userTotalDonated.toFixed(2)}.`, true);
+  showMessage(`Necesitas comprar $${needed.toFixed(2)} más para reclamar esta oferta. Has donado $${userTotalDonated.toFixed(2)}.`, true);
 }
 
 async function claimReward(rewardId) {
@@ -265,16 +265,16 @@ async function claimReward(rewardId) {
 
     if (response.ok) {
       const claim = await response.json();
-      showMessage(`¡Has reclamado la recompensa "${claim.reward_title}" exitosamente!`);
+      showMessage(`¡Has reclamado la oferta "${claim.reward_title}" exitosamente!`);
       userClaimedRewards.push(rewardId);
       loadRewards();
     } else {
       const error = await response.json();
-      showMessage(error.detail || 'Error al reclamar la recompensa', true);
+      showMessage(error.detail || 'Error al reclamar la oferta', true);
     }
   } catch (error) {
-    console.error('Error reclamando recompensa:', error);
-    showMessage('Error al reclamar la recompensa', true);
+    console.error('Error reclamando oferta:', error);
+    showMessage('Error al reclamar la oferta', true);
   }
 }
 
@@ -287,7 +287,7 @@ async function loadTopDonors() {
     const donors = await response.json();
     renderTopDonors(donors);
   } catch (error) {
-    console.error('Error cargando donadores:', error);
+    console.error('Error cargando compradores:', error);
   }
 }
 
@@ -295,7 +295,7 @@ function renderTopDonors(donors) {
   const donatorsList = document.querySelector('.donators_list');
 
   if (!donors || donors.length === 0) {
-    donatorsList.innerHTML = '<p style="text-align: center; color: #666; padding: 1rem;">Sé el primero en donar a esta campaña.</p>';
+    donatorsList.innerHTML = '<p style="text-align: center; color: #666; padding: 1rem;">Sé el primero en comprar a este producto.</p>';
     return;
   }
 
@@ -383,7 +383,7 @@ async function confirmDonation() {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.detail || 'Error al procesar donación');
+      throw new Error(error.detail || 'Error al procesar compra');
     }
 
     const donation = await response.json();
@@ -392,7 +392,7 @@ async function confirmDonation() {
     if (donation.payment_url) {
       window.location.href = donation.payment_url;
     } else {
-      showSuccess('¡Donación realizada con éxito! Gracias por tu apoyo.');
+      showSuccess('¡Compra realizada con éxito! Gracias por tu compra.');
       setTimeout(() => {
         loadCampaignDetail();
         loadTopDonors();

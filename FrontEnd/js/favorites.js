@@ -71,7 +71,7 @@ function createFavoriteCard(campaign) {
         <div class="grid_progress_bar">
           <div class="grid_progress_fill" style="width: ${Math.min(progress, 100)}%"></div>
         </div>
-        <p class="grid_progress_text">${formatCurrency(campaign.current_amount)} de ${formatCurrency(campaign.goal_amount)} | ${progress.toFixed(0)}% financiado</p>
+        <p class="grid_progress_text">${formatCurrency(campaign.current_amount)} de ${formatCurrency(campaign.goal_amount)} | ${progress.toFixed(0)}% vendido</p>
       </div>
       <div class="campaign_grid_footer">
         <span class="grid_days_left">
@@ -108,10 +108,10 @@ async function loadFavorites() {
       favoritesGrid.innerHTML = `
         <div class="no_favorites" style="grid-column: 1/-1; text-align: center; padding: 4rem 2rem;">
           <i class="fa-regular fa-heart" style="font-size: 4rem; color: #ccc; margin-bottom: 1rem;"></i>
-          <h3 style="color: #666; margin-bottom: 0.5rem;">No tienes campañas favoritas</h3>
-          <p style="color: #999; margin-bottom: 1.5rem;">Explora campañas y guárdalas para verlas después</p>
+          <h3 style="color: #666; margin-bottom: 0.5rem;">No tienes productos favoritas</h3>
+          <p style="color: #999; margin-bottom: 1.5rem;">Explora productos y guárdalas para verlas después</p>
           <a href="./index-logged.html" class="btn_explore" style="display: inline-block; padding: 0.75rem 1.5rem; background: #FF7A59; color: white; text-decoration: none; border-radius: 8px; font-weight: 500;">
-            Explorar Campañas
+            Explorar Productos
           </a>
         </div>
       `;

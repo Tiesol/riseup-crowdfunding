@@ -34,7 +34,7 @@ async function loadCampaigns(categoryId = null, searchQuery = null, page = 1) {
     if (searchQuery) url += `&search=${encodeURIComponent(searchQuery)}`;
 
     const response = await fetch(url);
-    if (!response.ok) throw new Error('Error al cargar campañas');
+    if (!response.ok) throw new Error('Error al cargar productos');
     const data = await response.json();
 
     currentPage = data.page || 1;
@@ -43,7 +43,7 @@ async function loadCampaigns(categoryId = null, searchQuery = null, page = 1) {
 
     return Array.isArray(data.items) ? data.items : [];
   } catch (error) {
-    console.error('Error cargando campañas:', error);
+    console.error('Error cargando productos:', error);
     currentPage = 1;
     totalPages = 1;
     totalCampaigns = 0;
@@ -84,7 +84,7 @@ function createCampaignCard(campaign) {
           <div class="grid_progress_bar">
             <div class="grid_progress_fill" style="width: ${progress}%"></div>
           </div>
-          <p class="grid_progress_text">$${(campaign.current_amount || 0).toLocaleString()} de $${(campaign.goal_amount || 0).toLocaleString()} | ${Math.round(progress)}% financiado</p>
+          <p class="grid_progress_text">$${(campaign.current_amount || 0).toLocaleString()} de $${(campaign.goal_amount || 0).toLocaleString()} | ${Math.round(progress)}% vendido</p>
         </div>
         <div class="campaign_grid_footer">
           <span class="grid_days_left">
@@ -115,7 +115,7 @@ function renderCampaigns() {
     grid.innerHTML = `
       <div class="no_results">
         <i class="fa-solid fa-search"></i>
-        <h3>No se encontraron campañas</h3>
+        <h3>No se encontraron productos</h3>
         <p>Intenta con otra búsqueda o categoría</p>
       </div>
     `;
@@ -124,6 +124,7 @@ function renderCampaigns() {
   }
 
   grid.innerHTML = filtered.map(c => createCampaignCard(c)).join('');
+  grid.removeAttribute('aria-busy');
   renderPagination();
 }
 
@@ -190,12 +191,7 @@ async function goToPage(page) {
 
   const grid = document.querySelector('.campaigns_grid');
   if (grid) {
-    grid.innerHTML = `
-      <div class="loading_campaigns" style="grid-column: 1/-1; text-align: center; padding: 3rem;">
-        <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #FF7A59;"></i>
-        <p style="margin-top: 1rem; color: #666;">Cargando campañas...</p>
-      </div>
-    `;
+    Skeleton.showGrid(grid, PAGE_SIZE);
   }
 
   allCampaigns = await loadCampaigns(currentCategory, currentSearch, page);
@@ -210,16 +206,16 @@ function updatePageHeader(category, searchQuery) {
 
   if (category) {
     if (titleEl) titleEl.textContent = category.name;
-    if (descEl) descEl.textContent = category.description || `Explora proyectos de ${category.name}`;
+    if (descEl) descEl.textContent = category.description || `Explora productos de ${category.name}`;
     document.title = `${category.name} - RiseUp`;
   } else if (searchQuery) {
     if (titleEl) titleEl.textContent = `Resultados para "${searchQuery}"`;
-    if (descEl) descEl.textContent = `Campañas que coinciden con tu búsqueda`;
+    if (descEl) descEl.textContent = `Productos que coinciden con tu búsqueda`;
     document.title = `Búsqueda: ${searchQuery} - RiseUp`;
   } else {
-    if (titleEl) titleEl.textContent = 'Todas las Campañas';
-    if (descEl) descEl.textContent = 'Explora todos los proyectos disponibles';
-    document.title = 'Campañas - RiseUp';
+    if (titleEl) titleEl.textContent = 'Todos los productos';
+    if (descEl) descEl.textContent = 'Explora todos los productos disponibles';
+    document.title = 'Productos - RiseUp';
   }
 }
 
@@ -246,7 +242,7 @@ function setupFilters() {
           grid.innerHTML = `
             <div class="no_results">
               <i class="fa-solid fa-search"></i>
-              <h3>No se encontraron campañas</h3>
+              <h3>No se encontraron productos</h3>
               <p>Intenta con otro filtro</p>
             </div>
           `;
@@ -259,6 +255,8 @@ function setupFilters() {
 }
 
 async function initCategoryPage() {
+  Skeleton.showGrid(document.querySelector('.campaigns_grid'), 6);
+
   const params = getURLParams();
   currentCategory = params.category;
   currentSearch = params.search || '';

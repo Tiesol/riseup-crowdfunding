@@ -148,7 +148,7 @@ async function loadMyCampaigns() {
       }
     });
 
-    if (!response.ok) throw new Error('Error al cargar campañas');
+    if (!response.ok) throw new Error('Error al cargar productos');
 
     allCampaigns = await response.json();
     renderCampaigns(allCampaigns);
@@ -158,7 +158,7 @@ async function loadMyCampaigns() {
     gallery.innerHTML = `
       <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
         <i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; color: #FF7A59;"></i>
-        <p style="margin-top: 1rem; color: #666;">Error al cargar tus campañas</p>
+        <p style="margin-top: 1rem; color: #666;">Error al cargar tus productos</p>
       </div>
     `;
   }
@@ -183,8 +183,8 @@ function renderCampaigns(campaigns) {
     gallery.innerHTML = `
       <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
         <i class="fa-solid fa-folder-open" style="font-size: 2rem; color: #ccc;"></i>
-        <p style="margin-top: 1rem; color: #666;">No tienes campañas en esta categoría</p>
-        <a href="./create-campaign.html" class="btn btn-primary" style="margin-top: 1rem; display: inline-block; padding: 12px 24px; text-decoration: none;">Crear Campaña</a>
+        <p style="margin-top: 1rem; color: #666;">No tienes productos en esta categoría</p>
+        <a href="./create-campaign.html" class="btn btn-primary" style="margin-top: 1rem; display: inline-block; padding: 12px 24px; text-decoration: none;">Crear Producto</a>
       </div>
     `;
     renderMyCampaignsPagination(0, 0);
@@ -309,7 +309,7 @@ function createCampaignCard(campaign) {
           ${isPublished ? `
             <a href="./campaign-contributors.html?id=${campaign.id}" class="campaign-dropdown-item">
               <i class="fa-solid fa-hand-holding-dollar"></i>
-              Ver Contribuciones
+              Ver Compras
             </a>
           ` : ''}
           ${isDraft ? `
@@ -331,7 +331,7 @@ function createCampaignCard(campaign) {
           <span class="days-left"><i class="fa-solid fa-clock"></i> ${daysLeft} días restantes</span>
           <span class="status-label">Estado: ${campaignState}</span>
         </div>
-        <a href="./campaign-detail-logged.html?id=${campaign.id}" class="btn btn-small btn-primary">Ver Campaña</a>
+        <a href="./campaign-detail-logged.html?id=${campaign.id}" class="btn btn-small btn-primary">Ver Producto</a>
       </div>
     </article>
   `;
@@ -382,11 +382,11 @@ async function changeCampaignState(campaignId, newState, event) {
 
     closeAllMenus();
     loadMyCampaigns();
-    showSuccess('Estado de campaña actualizado');
+    showSuccess('Estado de producto actualizado');
 
   } catch (error) {
     console.error('Error:', error);
-    showError('Error al cambiar el estado de la campaña');
+    showError('Error al cambiar el estado de el producto');
   }
 }
 
@@ -394,7 +394,7 @@ async function deleteCampaign(campaignId, event) {
   event.preventDefault();
   event.stopPropagation();
 
-  showConfirmModal('¿Estás seguro de que deseas eliminar esta campaña? Esta acción no se puede deshacer.', async () => {
+  showConfirmModal('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.', async () => {
     try {
       const response = await fetch(`${API_URL}/campaigns/${campaignId}`, {
         method: 'DELETE',
@@ -407,11 +407,11 @@ async function deleteCampaign(campaignId, event) {
 
       closeAllMenus();
       loadMyCampaigns();
-      showSuccess('Campaña eliminada');
+      showSuccess('Producto eliminado');
 
     } catch (error) {
       console.error('Error:', error);
-      showError('Error al eliminar la campaña');
+      showError('Error al eliminar el producto');
     }
   });
 }

@@ -8,7 +8,7 @@ async function checkPaymentStatus() {
   const token = localStorage.getItem('token');
 
   if (!donationId) {
-    showError('ID de donación no válido');
+    showError('ID de compra no válido');
     return;
   }
 
@@ -54,8 +54,7 @@ async function loadQR() {
   const qrImage = document.getElementById('qrImage');
   const actionsDiv = document.getElementById('paymentActions');
 
-  const GATEWAY_PUBLIC_URL = 'https://dj449p7g-3002.brs.devtunnels.ms';
-  const paymentConfirmUrl = `${GATEWAY_PUBLIC_URL}/wallet/${gatewayId}`;
+  const paymentConfirmUrl = `${window.CONFIG.GATEWAY_URL}/wallet/${gatewayId}`;
 
   qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(paymentConfirmUrl)}`;
   qrContainer.classList.remove('hidden');
@@ -68,7 +67,7 @@ async function simulatePayment() {
   btn.textContent = 'Procesando...';
 
   try {
-    const response = await fetch(`http://localhost:3002/payments/${gatewayId}/confirm`, {
+    const response = await fetch(`${window.CONFIG.GATEWAY_URL}/payments/${gatewayId}/confirm`, {
       method: 'POST'
     });
 

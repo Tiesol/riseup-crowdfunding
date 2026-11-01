@@ -15,7 +15,8 @@
   
   <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
   <link rel="icon" href="../assets/images/riseup.svg" type="image/svg+xml">
-  <title>Crear Campaña - RiseUp</title>
+  <title>Crear Producto - RiseUp</title>
+  <link rel="stylesheet" href="../assets/css/animations.css">
 </head>
 <body>
   <header>
@@ -44,7 +45,7 @@
       <div class="user_dropdown">
         <a href="./my-campaigns.html" class="dropdown_item">
           <i class="fa-solid fa-bullhorn"></i>
-          Mis Campañas
+          Mis Productos
         </a>
         <a href="./favorites.html" class="dropdown_item">
           <i class="fa-solid fa-heart"></i>
@@ -52,7 +53,7 @@
         </a>
         <a href="./donations.html" class="dropdown_item">
           <i class="fa-solid fa-hand-holding-dollar"></i>
-          Mis Contribuciones
+          Mis Compras
         </a>
         <a href="./profile.html" class="dropdown_item">
           <i class="fa-solid fa-user-circle"></i>
@@ -72,7 +73,7 @@
   </header>
   <main class="create-campaign-page">
     <div class="campaign-container">
-      <h1 class="page-title">Crear Nueva Campaña</h1>
+      <h1 class="page-title">Crear Nuevo producto</h1>
       
       <div id="errorMessage" class="error-message hidden"></div>
       <div id="successMessage" class="success-message hidden"></div>
@@ -88,13 +89,13 @@
       <section class="form-section">
         <h2>Información Básica</h2>
         <div class="form-group" id="grupoTitulo">
-          <label for="campaignTitle">Título de la Campaña *</label>
+          <label for="campaignTitle">Título de el producto *</label>
           <input type="text" id="campaignTitle" placeholder="Ej: Ayuda para construir una escuela">
           <span class="error-mensaje">El título es obligatorio</span>
         </div>
         <div class="form-group" id="grupoDescripcion">
           <label for="shortDescription">Descripción Corta *</label>
-          <textarea id="shortDescription" rows="3" placeholder="Breve descripción de tu campaña (máx. 300 caracteres)"></textarea>
+          <textarea id="shortDescription" rows="3" placeholder="Breve descripción de tu producto (máx. 300 caracteres)"></textarea>
           <span class="error-mensaje">La descripción es obligatoria</span>
         </div>
         <div class="form-row">
@@ -106,7 +107,7 @@
             <span class="error-mensaje">Selecciona una categoría</span>
           </div>
           <div class="form-group" id="grupoMeta">
-            <label for="goalAmount">Meta de Financiación ($) *</label>
+            <label for="goalAmount">Meta de ventas ($) *</label>
             <input type="number" id="goalAmount" placeholder="10000">
             <span class="error-mensaje">Ingresa una meta válida</span>
           </div>
@@ -123,13 +124,13 @@
       </section>
       
       <section class="form-section">
-        <h2>Recompensas</h2>
-        <p class="section-description">Añade recompensas para incentivar a los donadores.</p>
+        <h2>Ofertas</h2>
+        <p class="section-description">Añade ofertas para incentivar a los compradores.</p>
         <div id="rewardsList"></div>
         <div class="add-reward-form" id="addRewardForm">
           <div class="form-row">
             <div class="form-group">
-              <label for="rewardTitle">Título de la Recompensa</label>
+              <label for="rewardTitle">Título de la Oferta</label>
               <input type="text" id="rewardTitle" placeholder="Ej: Agradecimiento especial">
             </div>
             <div class="form-group">
@@ -139,21 +140,21 @@
           </div>
           <div class="form-group">
             <label for="rewardImageUrl">URL de Imagen (opcional)</label>
-            <input type="url" id="rewardImageUrl" placeholder="https://ejemplo.com/recompensa.jpg">
+            <input type="url" id="rewardImageUrl" placeholder="https://ejemplo.com/oferta.jpg">
           </div>
           <div class="form-group">
-            <label for="rewardDescription">Descripción de la Recompensa</label>
-            <textarea id="rewardDescription" rows="2" placeholder="Describe qué recibirá el donador"></textarea>
+            <label for="rewardDescription">Descripción de la Oferta</label>
+            <textarea id="rewardDescription" rows="2" placeholder="Describe qué recibirá el comprador"></textarea>
           </div>
           <button type="button" class="btn btn-add" id="btnAddReward">
-            <i class="fa-solid fa-plus"></i> Añadir Recompensa
+            <i class="fa-solid fa-plus"></i> Añadir Oferta
           </button>
         </div>
       </section>
       
       <section class="form-section">
         <h2>Descripción Completa</h2>
-        <p class="section-description">Cuenta la historia de tu campaña en detalle.</p>
+        <p class="section-description">Cuenta la historia de tu producto en detalle.</p>
         <div id="quillEditor"></div>
       </section>
       
@@ -208,7 +209,7 @@
             <i class="fa-solid fa-eye"></i> Observaciones
           </button>
           <button type="button" class="btn btn-primary" id="btnSendCampaign">
-            <i class="fa-solid fa-paper-plane"></i> Enviar Campaña
+            <i class="fa-solid fa-paper-plane"></i> Enviar Producto
           </button>
         </div>
       </div>
@@ -237,7 +238,7 @@
         <h3 class="footer_title">Soporte</h3>
         <ul class="footer_links">
           <li><a href="#">Centro de ayuda</a></li>
-          <li><a href="#">Guías para creadores</a></li>
+          <li><a href="#">Guías para vendedores</a></li>
           <li><a href="mailto:soporte@riseup.com">soporte@riseup.com</a></li>
         </ul>
       </div>

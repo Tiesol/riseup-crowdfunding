@@ -34,14 +34,14 @@ async function loadCampaignDetail() {
     const response = await fetch(`${API_URL}/campaigns/public/${campaignId}`);
 
     if (!response.ok) {
-      throw new Error('Campaña no encontrada');
+      throw new Error('Producto no encontrada');
     }
 
     const campaign = await response.json();
     renderCampaignDetail(campaign);
 
   } catch (error) {
-    console.error('Error cargando campaña:', error);
+    console.error('Error cargando producto:', error);
     window.location.href = './index.html';
   }
 }
@@ -53,7 +53,7 @@ function renderCampaignDetail(campaign) {
 
   document.querySelector('.creator_name').textContent = campaign.user_first_name
     ? `${campaign.user_first_name} ${campaign.user_last_name || ''}`
-    : 'Creador';
+    : 'Vendedor';
 
   document.querySelector('.campaign_detail_title').textContent = campaign.tittle;
 
@@ -65,7 +65,7 @@ function renderCampaignDetail(campaign) {
 
   document.querySelector('.detail_progress_fill').style.width = `${Math.min(progress, 100)}%`;
   document.querySelector('.funding_text').textContent =
-    `${formatCurrency(campaign.current_amount)} de ${formatCurrency(campaign.goal_amount)} | ${progress.toFixed(0)}% financiado`;
+    `${formatCurrency(campaign.current_amount)} de ${formatCurrency(campaign.goal_amount)} | ${progress.toFixed(0)}% vendido`;
 
   const daysLeft = calculateDaysLeft(campaign.expiration_date);
   const daysElement = document.querySelector('.days_count');
@@ -78,7 +78,7 @@ function renderCampaignDetail(campaign) {
     descriptionContent.innerHTML = campaign.rich_text;
   } else {
     descriptionContent.innerHTML = `
-      <h3>Sobre el Proyecto</h3>
+      <h3>Sobre el Producto</h3>
       <p>${campaign.description || 'Sin descripción disponible'}</p>
     `;
   }
@@ -106,7 +106,7 @@ async function loadRewards() {
     const rewards = await response.json();
     renderRewards(rewards);
   } catch (error) {
-    console.error('Error cargando recompensas:', error);
+    console.error('Error cargando ofertas:', error);
   }
 }
 
@@ -114,7 +114,7 @@ function renderRewards(rewards) {
   const rewardsGrid = document.querySelector('.rewards_grid');
 
   if (!rewards || rewards.length === 0) {
-    rewardsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">Esta campaña aún no tiene recompensas.</p>';
+    rewardsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">Este producto aún no tiene ofertas.</p>';
     return;
   }
 
@@ -122,7 +122,7 @@ function renderRewards(rewards) {
     <div class="reward_card">
       <h3 class="reward_title">${reward.tittle}</h3>
       <div class="reward_image">
-        <img src="${reward.image_url || 'https://placehold.co/300x200/FF7A59/FFFFFF?text=Recompensa'}" alt="${reward.tittle}">
+        <img src="${reward.image_url || 'https://placehold.co/300x200/FF7A59/FFFFFF?text=Oferta'}" alt="${reward.tittle}">
       </div>
       <p class="reward_amount">${formatCurrency(reward.amount)}</p>
       <p class="reward_description">${reward.description || 'Sin descripción'}</p>
@@ -141,7 +141,7 @@ async function loadTopDonors() {
     const donors = await response.json();
     renderTopDonors(donors);
   } catch (error) {
-    console.error('Error cargando donadores:', error);
+    console.error('Error cargando compradores:', error);
   }
 }
 
@@ -149,7 +149,7 @@ function renderTopDonors(donors) {
   const donatorsList = document.querySelector('.donators_list');
 
   if (!donors || donors.length === 0) {
-    donatorsList.innerHTML = '<p style="text-align: center; color: #666; padding: 1rem;">Sé el primero en donar a esta campaña.</p>';
+    donatorsList.innerHTML = '<p style="text-align: center; color: #666; padding: 1rem;">Sé el primero en comprar a este producto.</p>';
     return;
   }
 

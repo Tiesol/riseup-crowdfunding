@@ -20,24 +20,24 @@ async function loadCampaignData() {
   const campaignId = getUrlParam('campaign_id');
 
   if (!campaignId) {
-    document.querySelector('.project-name').textContent = 'Sin campaña seleccionada';
+    document.querySelector('.project-name').textContent = 'Sin producto seleccionado';
     return;
   }
 
   try {
     const response = await fetch(`${API_URL}/campaigns/public/${campaignId}`);
 
-    if (!response.ok) throw new Error('Error al cargar campaña');
+    if (!response.ok) throw new Error('Error al cargar producto');
 
     const campaign = await response.json();
 
     document.querySelector('.project-name').textContent = `${campaign.tittle} recaudó:`;
     document.querySelector('.total-amount').textContent = formatCurrency(campaign.current_amount);
-    document.title = `Contribuciones - ${campaign.tittle} - RiseUp`;
+    document.title = `Compras - ${campaign.tittle} - RiseUp`;
 
   } catch (error) {
     console.error('Error:', error);
-    document.querySelector('.project-name').textContent = 'Error al cargar campaña';
+    document.querySelector('.project-name').textContent = 'Error al cargar producto';
   }
 }
 
@@ -65,7 +65,7 @@ async function loadDonations() {
     }
 
   } catch (error) {
-    console.error('Error cargando donaciones:', error);
+    console.error('Error cargando compras:', error);
   }
 }
 
@@ -78,7 +78,7 @@ function renderTopDonors(donors) {
         <span>Usuario</span>
         <span>Cantidad</span>
       </div>
-      <p style="text-align: center; padding: 2rem; color: #666;">Aún no hay donaciones</p>
+      <p style="text-align: center; padding: 2rem; color: #666;">Aún no hay compras</p>
     `;
     return;
   }
@@ -108,7 +108,7 @@ function renderAllDonors(donations) {
 
   if (!donations || donations.length === 0) {
     container.innerHTML = `
-      <p style="text-align: center; padding: 2rem; color: #666;">Aún no hay donaciones</p>
+      <p style="text-align: center; padding: 2rem; color: #666;">Aún no hay compras</p>
     `;
     return;
   }

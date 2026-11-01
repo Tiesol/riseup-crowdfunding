@@ -36,7 +36,7 @@ async function loadMyDonations() {
         window.location.href = './login.html';
         return;
       }
-      throw new Error('Error al cargar donaciones');
+      throw new Error('Error al cargar compras');
     }
 
     const donations = await response.json();
@@ -69,7 +69,7 @@ async function loadMyDonations() {
 
   } catch (error) {
     console.error('Error:', error);
-    container.innerHTML = `<p style="text-align: center; color: #666; grid-column: 1/-1;">Error al cargar tus contribuciones</p>`;
+    container.innerHTML = `<p style="text-align: center; color: #666; grid-column: 1/-1;">Error al cargar tus compras</p>`;
   }
 }
 
@@ -91,7 +91,7 @@ function renderDonations(donations, container) {
           ${donation.campaign_category ? `<span class="donation-card-category">${donation.campaign_category}</span>` : ''}
 
           <h3 class="donation-card-title">${donation.campaign_title}</h3>
-          <p class="donation-card-creator">por ${donation.creator_name || 'Creador'}</p>
+          <p class="donation-card-creator">por ${donation.creator_name || 'Vendedor'}</p>
 
           <div class="donation-card-stats">
             <div class="donation-stat">
@@ -100,7 +100,7 @@ function renderDonations(donations, container) {
             </div>
             <div class="donation-stat">
               <div class="donation-stat-value">${formatCurrency(donation.campaign_current)}</div>
-              <div class="donation-stat-label">Recaudado</div>
+              <div class="donation-stat-label">Vendido</div>
             </div>
           </div>
 
@@ -120,7 +120,7 @@ function renderDonations(donations, container) {
               <span>${daysLeft > 0 ? `${daysLeft} días restantes` : 'Finalizada'}</span>
             </div>
             <a href="./campaign-detail-logged.html?id=${donation.campaign_id}" class="btn-view-campaign">
-              Ver campaña
+              Ver producto
             </a>
           </div>
         </div>
@@ -133,9 +133,9 @@ function renderEmptyState(container) {
   container.innerHTML = `
     <div class="empty-state" style="grid-column: 1/-1;">
       <i class="fa-solid fa-hand-holding-heart"></i>
-      <h3>Aún no has realizado contribuciones</h3>
-      <p>Explora campañas y apoya proyectos que te inspiren</p>
-      <a href="./index-logged.html" class="btn-explore">Explorar Campañas</a>
+      <h3>Aún no has realizado compras</h3>
+      <p>Explora productos y compra productos que te inspiren</p>
+      <a href="./index-logged.html" class="btn-explore">Explorar Productos</a>
     </div>
   `;
 

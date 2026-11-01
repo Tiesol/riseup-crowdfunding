@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="../assets/fontsawesome/css/brands.min.css" />
   <link rel="icon" href="../assets/images/riseup.svg" type="image/svg+xml">
   <title>Aplicación Móvil Innovadora - RiseUp</title>
+  <link rel="stylesheet" href="../assets/css/animations.css">
 </head>
 <body>
   <header>
@@ -46,7 +47,7 @@
       <div class="user_dropdown">
         <a href="./my-campaigns.html" class="dropdown_item">
           <i class="fa-solid fa-bullhorn"></i>
-          Mis Campañas
+          Mis Productos
         </a>
         <a href="./favorites.html" class="dropdown_item">
           <i class="fa-solid fa-heart"></i>
@@ -54,7 +55,7 @@
         </a>
         <a href="./donations.html" class="dropdown_item">
           <i class="fa-solid fa-hand-holding-dollar"></i>
-          Mis Contribuciones
+          Mis Compras
         </a>
         <a href="./profile.html" class="dropdown_item">
           <i class="fa-solid fa-user-circle"></i>
@@ -81,7 +82,7 @@
   <div class="campaign_detail_container">
     <section class="campaign_hero">
       <div class="campaign_hero_left">
-        <img src="" alt="Campaña">
+        <img src="" alt="Producto">
       </div>
       <div class="campaign_hero_right">
         <div class="campaign_info_card">
@@ -102,7 +103,7 @@
             </div>
             <p class="funding_text">Cargando...</p>
           </div>
-          <button class="btn_donate">DONAR</button>
+          <button class="btn_donate">COMPRAR</button>
           <a href="#" class="add_favorite">
             <i class="fa-regular fa-bookmark"></i>
             Agregar a favoritos
@@ -113,7 +114,7 @@
     <section class="top_donators_section">
       <h2 class="section_title_detail">
         <i class="fa-solid fa-trophy"></i>
-        Top Donadores
+        Top Compradores
       </h2>
       <div class="donators_list">
       </div>
@@ -121,7 +122,7 @@
     <section class="rewards_section">
       <h2 class="section_title_detail">
         <i class="fa-solid fa-gift"></i>
-        Recompensas
+        Ofertas
       </h2>
       <div class="rewards_grid">
       </div>
@@ -169,7 +170,7 @@
       <h3 class="footer_title">Soporte</h3>
       <ul class="footer_links">
         <li><a href="#">Centro de ayuda</a></li>
-        <li><a href="#">Guías para creadores</a></li>
+        <li><a href="#">Guías para vendedores</a></li>
         <li><a href="mailto:soporte@riseup.com">soporte@riseup.com</a></li>
       </ul>
     </div>
@@ -182,16 +183,16 @@
 <div id="donationModal" class="modal-overlay hidden">
   <div class="modal-content">
     <div class="modal-header">
-      <h3>Realizar Donación</h3>
+      <h3>Realizar Compra</h3>
       <button type="button" class="modal-close" onclick="closeDonationModal()">&times;</button>
     </div>
     <div class="modal-body">
-      <label for="donationAmount">¿Cuánto deseas donar? (USD)</label>
+      <label for="donationAmount">¿Cuánto deseas comprar? (USD)</label>
       <input type="number" id="donationAmount" min="1" step="0.01" placeholder="Ej: 50">
     </div>
     <div class="modal-footer">
       <button type="button" class="btn-modal-cancel" onclick="closeDonationModal()">Cancelar</button>
-      <button type="button" class="btn-modal-confirm" onclick="confirmDonation()">Donar</button>
+      <button type="button" class="btn-modal-confirm" onclick="confirmDonation()">Comprar</button>
     </div>
   </div>
 </div>

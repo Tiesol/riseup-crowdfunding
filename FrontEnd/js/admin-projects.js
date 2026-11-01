@@ -1,4 +1,4 @@
-var proyectos = [];
+var productos = [];
 var campaniaActual = null;
 var filtroActual = '2';
 var accionPendiente = null;
@@ -53,12 +53,12 @@ function cargarProyectos() {
         return response.json();
     })
     .then(function(data) {
-        proyectos = data;
+        productos = data;
         mostrarProyectos();
     })
     .catch(function(error) {
         console.error('Error:', error);
-        mostrarMensaje('Error al cargar los proyectos', 'error');
+        mostrarMensaje('Error al cargar los productos', 'error');
     });
 }
 
@@ -66,13 +66,13 @@ function mostrarProyectos() {
     var tbody = document.getElementById('tablaCampanias');
     tbody.innerHTML = '';
 
-    if (proyectos.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="sin-resultados">No hay proyectos</td></tr>';
+    if (productos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="sin-resultados">No hay productos</td></tr>';
         return;
     }
 
-    for (var i = 0; i < proyectos.length; i++) {
-        var p = proyectos[i];
+    for (var i = 0; i < productos.length; i++) {
+        var p = productos[i];
         var tr = document.createElement('tr');
 
         var estadoTexto = obtenerEstadoTexto(p.workflow_state_id);
@@ -110,20 +110,20 @@ function obtenerEstadoClase(estado) {
     return '';
 }
 
-function generarBotones(proyecto) {
+function generarBotones(producto) {
     var botones = '';
 
-    botones = botones + '<button class="btn btn-ver" onclick="verDetalle(' + proyecto.id + ')">Ver</button>';
+    botones = botones + '<button class="btn btn-ver" onclick="verDetalle(' + producto.id + ')">Ver</button>';
 
-    if (proyecto.workflow_state_id === 2) {
-        botones = botones + '<button class="btn btn-aprobar" onclick="aprobar(' + proyecto.id + ')">Aprobar</button>';
-        botones = botones + '<button class="btn btn-observar" onclick="abrirFormularioObservacion(' + proyecto.id + ', \'observar\')">Observar</button>';
-        botones = botones + '<button class="btn btn-rechazar" onclick="rechazarDirecto(' + proyecto.id + ')">Rechazar</button>';
+    if (producto.workflow_state_id === 2) {
+        botones = botones + '<button class="btn btn-aprobar" onclick="aprobar(' + producto.id + ')">Aprobar</button>';
+        botones = botones + '<button class="btn btn-observar" onclick="abrirFormularioObservacion(' + producto.id + ', \'observar\')">Observar</button>';
+        botones = botones + '<button class="btn btn-rechazar" onclick="rechazarDirecto(' + producto.id + ')">Rechazar</button>';
     }
 
-    if (proyecto.workflow_state_id === 3) {
-        botones = botones + '<button class="btn btn-aprobar" onclick="aprobar(' + proyecto.id + ')">Aprobar</button>';
-        botones = botones + '<button class="btn btn-rechazar" onclick="rechazarDirecto(' + proyecto.id + ')">Rechazar</button>';
+    if (producto.workflow_state_id === 3) {
+        botones = botones + '<button class="btn btn-aprobar" onclick="aprobar(' + producto.id + ')">Aprobar</button>';
+        botones = botones + '<button class="btn btn-rechazar" onclick="rechazarDirecto(' + producto.id + ')">Rechazar</button>';
     }
 
     return botones;
@@ -186,7 +186,7 @@ function aprobar(id) {
         return response.json();
     })
     .then(function(data) {
-        mostrarMensaje('Proyecto aprobado correctamente', 'exito');
+        mostrarMensaje('Producto aprobado correctamente', 'exito');
         if (campaniaActual) {
             volverALista();
         } else {
@@ -195,7 +195,7 @@ function aprobar(id) {
     })
     .catch(function(error) {
         console.error('Error:', error);
-        mostrarMensaje('Error al aprobar el proyecto', 'error');
+        mostrarMensaje('Error al aprobar el producto', 'error');
     });
 }
 
@@ -213,7 +213,7 @@ function rechazarDirecto(id) {
         return response.json();
     })
     .then(function(data) {
-        mostrarMensaje('Proyecto rechazado correctamente', 'exito');
+        mostrarMensaje('Producto rechazado correctamente', 'exito');
         if (campaniaActual) {
             volverALista();
         } else {
@@ -222,7 +222,7 @@ function rechazarDirecto(id) {
     })
     .catch(function(error) {
         console.error('Error:', error);
-        mostrarMensaje('Error al rechazar el proyecto', 'error');
+        mostrarMensaje('Error al rechazar el producto', 'error');
     });
 }
 
@@ -286,7 +286,7 @@ function confirmarAccion() {
         return response.json();
     })
     .then(function(data) {
-        var msg = accionPendiente === 'observar' ? 'Observación enviada' : 'Proyecto rechazado';
+        var msg = accionPendiente === 'observar' ? 'Observación enviada' : 'Producto rechazado';
         mostrarMensaje(msg, 'exito');
         cancelarObservacion();
         volverALista();

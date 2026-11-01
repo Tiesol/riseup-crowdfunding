@@ -444,14 +444,14 @@ INSERT INTO campaign (id, tittle, description, rich_text, goal_amount, current_a
      '<h3>El Futuro de la Agricultura</h3><p>Nuestra granja vertical permite cultivar vegetales frescos en cualquier espacio urbano, reduciendo la huella de carbono del transporte de alimentos.</p>',
      75000, 45000, '2025-12-01', '2026-04-30',
      'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=800',
-     4, 2, 5, 2),
+     4, 9, 5, 2),
     
     (4, 'Documental: Voces del Amazonas',
      'Documental que cuenta las historias de las comunidades indígenas del Amazonas y su lucha por preservar la selva.',
      '<h3>Un Viaje al Corazón del Amazonas</h3><p>Durante 6 meses, viviremos con diferentes comunidades indígenas para documentar su cultura, tradiciones y la amenaza que enfrentan.</p>',
      35000, 28000, '2025-12-01', '2026-01-31',
      'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800',
-     2, 3, 5, 2),
+     2, 4, 5, 2),
     
     (5, 'Prótesis 3D Accesibles',
      'Fabricación de prótesis de mano impresas en 3D a bajo costo para personas de escasos recursos.',
@@ -465,7 +465,7 @@ INSERT INTO campaign (id, tittle, description, rich_text, goal_amount, current_a
      '<h3>Celebrando el Talento Emergente</h3><p>Queremos crear un espacio para que artistas independientes muestren su trabajo a miles de personas.</p>',
      60000, 15000, '2025-12-01', '2026-05-01',
      'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800',
-     4, 4, 5, 2)
+     4, 3, 5, 2)
 ON CONFLICT (id) DO NOTHING;
 
 -- Recompensas de ejemplo

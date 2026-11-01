@@ -22,6 +22,14 @@ from app.models.campaign_observation import CampaignObservation, CampaignObserva
 
 router = APIRouter(prefix="/campaigns", tags=["Campañas"])
 
+ACCENTS, PLAIN = "áéíóúüñ", "aeiouun"
+
+def normalize_sql(column):
+    return func.translate(func.lower(column), ACCENTS, PLAIN)
+
+def normalize_text(text: str) -> str:
+    return text.lower().translate(str.maketrans(ACCENTS, PLAIN))
+
 @router.get("/public", response_model=CampaignPaginatedResponse)
 async def get_public_campaigns(
     category_id: Optional[int] = None,
@@ -39,10 +47,14 @@ async def get_public_campaigns(
     if category_id:
         base_where.append(Campaign.category_id == category_id)
 
-    if search:
+    # Cada palabra debe aparecer en el título, la descripción o el nombre de la categoría (sin importar tildes)
+    for word in normalize_text(search or "").split():
+        pattern = f"%{word}%"
+        matching_categories = select(Category.id).where(normalize_sql(Category.name).like(pattern))
         base_where.append(
-            Campaign.tittle.ilike(f"%{search}%") |
-            Campaign.description.ilike(f"%{search}%")
+            normalize_sql(Campaign.tittle).like(pattern) |
+            normalize_sql(Campaign.description).like(pattern) |
+            Campaign.category_id.in_(matching_categories)
         )
 
     count_statement = select(func.count(Campaign.id)).where(*base_where)

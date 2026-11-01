@@ -35,7 +35,7 @@ async function loadContributors() {
 
     if (!response.ok) {
       if (response.status === 403) {
-        alert('Esta campaña no está disponible');
+        alert('Este producto no está disponible');
         window.location.href = './my-campaigns.html';
         return;
       }
@@ -77,7 +77,7 @@ function renderTopDonors(topDonors) {
     container.innerHTML = `
       <div class="empty-donors" style="grid-column: 1/-1;">
         <i class="fa-solid fa-hand-holding-heart"></i>
-        <p>Aún no hay donaciones</p>
+        <p>Aún no hay compras</p>
       </div>
     `;
     return;
@@ -104,7 +104,7 @@ function renderAllDonors(donors) {
     container.innerHTML = `
       <div class="empty-donors">
         <i class="fa-solid fa-hand-holding-heart"></i>
-        <p>Aún no hay donaciones registradas</p>
+        <p>Aún no hay compras registradas</p>
       </div>
     `;
     return;

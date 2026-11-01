@@ -10,7 +10,7 @@ dist/
 build/
 
 # Environment (comentado para incluir .env en el repo)
-# .env
+.env
 # .env.local
 # .env.*.local
 venv/
