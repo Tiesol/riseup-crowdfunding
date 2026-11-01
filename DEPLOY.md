@@ -24,11 +24,8 @@ Tiempo estimado: 30–40 min.
    JWT_EXPIRATION_HOURS=24
    FRONTEND_URL=https://<tu-proyecto>.vercel.app
    GATEWAY_URL=https://<dominio-gateway>.up.railway.app/payments
-   MAIL_SERVER=smtp.gmail.com
-   MAIL_PORT=587
-   MAIL_USERNAME=<tu-cuenta>@gmail.com
-   MAIL_PASSWORD=<contraseña de aplicación de 16 letras, ver sección 3>
-   MAIL_FROM=<tu-cuenta>@gmail.com
+   BREVO_API_KEY=<API key de Brevo, ver sección 3>
+   MAIL_FROM=<el correo que verificaste en Brevo>
    MAIL_FROM_NAME=RiseUp
    ```
 5. **Servicio `gateway`** (+ New → GitHub repo, el mismo repo): rama **`demo-tienda`** · *Root Directory* `/payment-gateway/Gateway` → **Generate Domain** (puerto 3000).
@@ -53,15 +50,16 @@ Tiempo estimado: 30–40 min.
 4. Deploy. [FrontEnd/vercel.json](FrontEnd/vercel.json) hace que `/login.html` sirva `pages/login.html`, igual que el nginx local.
 5. Copia la URL de Vercel a `FRONTEND_URL` en el backend de Railway (se redespliega solo).
 
-## 3. Correo real con Gmail (verificación al registrarse)
+## 3. Correo real con Brevo (verificación al registrarse)
 
-1. En la cuenta de Gmail que enviará los correos activa la **verificación en 2 pasos** (myaccount.google.com → Seguridad).
-2. Entra a [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords), crea una contraseña llamada `RiseUp` y copia las 16 letras (sin espacios).
-3. Pon los valores de la sección 1.4 en el `.env` local (y reinicia: `docker compose up -d backend`) o en las variables de Railway.
-4. Prueba: regístrate con un correo real → llega "Verifica tu cuenta" → el enlace abre `verify.html` y activa la cuenta.
+El backend envía por la API HTTP de Brevo cuando existe `BREVO_API_KEY` (los hostings suelen bloquear SMTP); si no existe, usa SMTP (`MAIL_SERVER`...), como en local con Mailtrap.
 
-> Si el correo funciona en local pero no en Railway: Railway puede bloquear SMTP saliente en planes que no son Pro.
-> En ese caso hay que enviar por una API HTTP (Resend o Brevo, ambas con plan gratis); es un cambio chico en `backend/app/services/email_service.py`.
+1. Crea una cuenta gratis en [brevo.com](https://www.brevo.com) (300 correos/día).
+2. **Remitente**: *Settings → Senders, domains & dedicated IPs → Senders → Add a sender* con tu Gmail. Brevo te manda un código: confírmalo.
+3. **API key**: *Settings → SMTP & API → API Keys → Generate a new API key*. Cópiala (empieza con `xkeysib-`).
+4. En Railway (servicio `backend`) pon `BREVO_API_KEY`, `MAIL_FROM` (el Gmail verificado) y `MAIL_FROM_NAME`.
+5. Prueba: regístrate desde el celular con un correo real → llega "Verifica tu cuenta" → el enlace abre `verify.html` y activa la cuenta.
+   Si no llega, revisa **Spam** y en Brevo *Transactional → Logs*.
 
 ## 4. Usuarios de demo (contraseña `test123`)
 

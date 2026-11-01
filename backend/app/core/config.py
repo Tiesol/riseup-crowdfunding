@@ -16,6 +16,7 @@ class Settings:
     MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD", "")
     MAIL_FROM: str = os.getenv("MAIL_FROM", "noreply@riseup.com")
     MAIL_FROM_NAME: str = os.getenv("MAIL_FROM_NAME", "RiseUp Platform")
+    BREVO_API_KEY: str = os.getenv("BREVO_API_KEY", "")
 
     FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:8080")
 
