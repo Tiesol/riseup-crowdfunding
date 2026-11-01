@@ -17,10 +17,10 @@ El backend carga los datos iniciales (`database/*.sql`) solo la primera vez que 
    riseup-backend  FRONTEND_URL               = (déjalo vacío por ahora, paso 2.4)
    riseup-backend  BREVO_API_KEY              = (sección 3; puede ir vacío al inicio)
    riseup-backend  MAIL_FROM                  = (tu Gmail verificado en Brevo)
-   riseup-gateway  CONFIRMATION_HOOK_ENDPOINT = https://riseup-backend.onrender.com/donations/confirm-payment
+   riseup-gateway  CONFIRMATION_HOOK_ENDPOINT = https://riseup-backend-o9sg.onrender.com/donations/confirm-payment
    ```
 4. **Apply**. El primer deploy tarda 5–10 min. Cuando termine, comprueba:
-   - `https://riseup-backend.onrender.com/health` → `{"status":"healthy"}`
+   - `https://riseup-backend-o9sg.onrender.com/health` → `{"status":"healthy"}`
    - `https://riseup-gateway.onrender.com/` → `{"ok":true,...}`
 5. Si Render asignó otras URLs (por ejemplo `riseup-backend-x1y2.onrender.com`), corrígelas en las variables
    de arriba y en [FrontEnd/js/config.js](FrontEnd/js/config.js).
@@ -60,7 +60,7 @@ En el celular, en la página de pago usa **"Simular pago"** (el QR está pensado
 ## 5. Probar
 
 ```bash
-API_URL=https://riseup-backend.onrender.com GATEWAY_URL=https://riseup-gateway.onrender.com python3 tests/smoke_test.py
+API_URL=https://riseup-backend-o9sg.onrender.com GATEWAY_URL=https://riseup-gateway.onrender.com python3 tests/smoke_test.py
 ```
 
 La prueba crea un producto "Smoke test" y compras de prueba: **no la corras sobre la base de la demo justo antes de mostrarla.**
