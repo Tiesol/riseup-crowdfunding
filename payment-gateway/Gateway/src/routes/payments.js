@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
     const fechaRegistro = new Date();
     const estado = 'PENDING';
 
-    const sql = 'INSERT INTO pagos (id, fechaRegistro, monto, estado, fechaPago) VALUES (?,?,?,?,?)';
+    const sql = 'INSERT INTO pagos (id, "fechaRegistro", monto, estado, "fechaPago") VALUES (?,?,?,?,?)';
     const params = [
       id,
       formatDateTime(fechaRegistro),
@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
     await pool.query(sql, params);
     res.status(201).json({ id, estado, qr :  `${publicUrl}payments/qr/${id}` });
   } catch (err) {
-    if (err.code === 'ER_DUP_ENTRY') {
+    if (err.code === '23505') {
       return res.status(409).json({ error: 'identifier ya existe' });
     }
     console.error(err);
@@ -46,7 +46,7 @@ router.post('/:id/confirm', async (req, res) => {
     console.log(`Confirmando pago ${id} a las ${fechaPago.toISOString()}`);
 
     const pool = getPool();
-    const [result] = await pool.query('UPDATE pagos SET estado=?, fechaPago=? WHERE id=?', [estado, formatDateTime(fechaPago), id]);
+    const [result] = await pool.query('UPDATE pagos SET estado=?, "fechaPago"=? WHERE id=?', [estado, formatDateTime(fechaPago), id]);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: 'Pago no encontrado' });

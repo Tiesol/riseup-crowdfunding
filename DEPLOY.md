@@ -1,64 +1,50 @@
 # Despliegue para demo
 
 - **Frontend** (HTML/CSS/JS estático) → **Vercel**. No necesita React ni paso de build.
-- **Backend** (FastAPI) + **PostgreSQL** + **Pasarela** (Node) + **MySQL** → **Railway**, todo en un mismo proyecto.
+- **Backend** (FastAPI) + **Pasarela** (Node) + **PostgreSQL** → **Render**, creados juntos con [render.yaml](render.yaml).
 
-Tiempo estimado: 30–40 min.
+Backend y pasarela comparten la misma base Postgres (la pasarela usa su propia tabla `pagos`).
+El backend carga los datos iniciales (`database/*.sql`) solo la primera vez que arranca contra una base vacía.
 
-## 1. Railway (backend, pasarela y bases de datos)
+## 1. Render (backend, pasarela y base de datos)
 
-1. Entra a [railway.com](https://railway.com) con GitHub → **New Project** → **Deploy from GitHub repo** → `Tiesol/riseup-crowdfunding`.
-2. En el proyecto: **+ New → Database → PostgreSQL** y **+ New → Database → MySQL**.
-3. **Cargar los datos iniciales** (desde tu PC; copia las URLs públicas de la pestaña *Connect* de cada base):
-   ```bash
-   psql "<POSTGRES_PUBLIC_URL>" -f database/init.sql
-   psql "<POSTGRES_PUBLIC_URL>" -f database/add_requirements.sql
-   mysql -h <MYSQL_HOST> -P <MYSQL_PORT> -u root -p<MYSQL_PASSWORD> < payment-gateway/Database/database.sql
+1. Entra a [render.com](https://render.com) → **Get Started** → **GitHub** (cuenta `Tiesol`).
+2. **New → Blueprint** → conecta el repo `riseup-crowdfunding` → rama **`demo-tienda`**.
+   Render lee `render.yaml` y muestra: `riseup-db`, `riseup-backend`, `riseup-gateway`.
+3. Te pide las variables marcadas `sync: false`. Pon estas (si el nombre `.onrender.com` cambia, se corrige después):
    ```
-4. **Servicio `backend`**: Settings → *Source* rama **`demo-tienda`** · *Root Directory* `/backend` → *Networking* → **Generate Domain** (puerto 8000).
-   Variables:
+   riseup-backend  GATEWAY_URL                = https://riseup-gateway.onrender.com/payments
+   riseup-backend  FRONTEND_URL               = (déjalo vacío por ahora, paso 2.4)
+   riseup-backend  BREVO_API_KEY              = (sección 3; puede ir vacío al inicio)
+   riseup-backend  MAIL_FROM                  = (tu Gmail verificado en Brevo)
+   riseup-gateway  CONFIRMATION_HOOK_ENDPOINT = https://riseup-backend.onrender.com/donations/confirm-payment
    ```
-   DATABASE_URL=${{Postgres.DATABASE_URL}}
-   JWT_SECRET_KEY=<cadena aleatoria nueva>
-   JWT_ALGORITHM=HS256
-   JWT_EXPIRATION_HOURS=24
-   FRONTEND_URL=https://<tu-proyecto>.vercel.app
-   GATEWAY_URL=https://<dominio-gateway>.up.railway.app/payments
-   BREVO_API_KEY=<API key de Brevo, ver sección 3>
-   MAIL_FROM=<el correo que verificaste en Brevo>
-   MAIL_FROM_NAME=RiseUp
-   ```
-5. **Servicio `gateway`** (+ New → GitHub repo, el mismo repo): rama **`demo-tienda`** · *Root Directory* `/payment-gateway/Gateway` → **Generate Domain** (puerto 3000).
-   Variables:
-   ```
-   PORT=3000
-   DB_HOST=${{MySQL.MYSQLHOST}}
-   DB_PORT=${{MySQL.MYSQLPORT}}
-   DB_USER=${{MySQL.MYSQLUSER}}
-   DB_PASSWORD=${{MySQL.MYSQLPASSWORD}}
-   DB_NAME=payments_db
-   PUBLIC_URL=https://<dominio-gateway>.up.railway.app/
-   CONFIRMATION_HOOK_ENDPOINT=https://<dominio-backend>.up.railway.app/donations/confirm-payment
-   ```
-6. Comprueba que `https://<dominio-backend>.up.railway.app/health` responde `{"status":"healthy"}`.
+4. **Apply**. El primer deploy tarda 5–10 min. Cuando termine, comprueba:
+   - `https://riseup-backend.onrender.com/health` → `{"status":"healthy"}`
+   - `https://riseup-gateway.onrender.com/` → `{"ok":true,...}`
+5. Si Render asignó otras URLs (por ejemplo `riseup-backend-x1y2.onrender.com`), corrígelas en las variables
+   de arriba y en [FrontEnd/js/config.js](FrontEnd/js/config.js).
+
+> **Plan gratis:** los servicios se duermen tras 15 min sin uso y la primera visita tarda ~50 s en despertarlos.
+> Antes de la demo abre el sitio y `.../health` del backend 2–3 minutos antes. La base gratis expira a los 30 días.
 
 ## 2. Vercel (frontend)
 
-1. Pon los dominios de Railway en [FrontEnd/js/config.js](FrontEnd/js/config.js) (`RISEUP-BACKEND` y `RISEUP-GATEWAY`), haz commit y push.
-2. Entra a [vercel.com](https://vercel.com) → **Add New → Project** → importa el repo.
-3. *Root Directory*: `FrontEnd` · *Framework Preset*: **Other** · sin Build Command. Luego en *Settings → Git → Production Branch* pon **`demo-tienda`** y redeploy.
-4. Deploy. [FrontEnd/vercel.json](FrontEnd/vercel.json) hace que `/login.html` sirva `pages/login.html`, igual que el nginx local.
-5. Copia la URL de Vercel a `FRONTEND_URL` en el backend de Railway (se redespliega solo).
+1. **Create New → Project** → importa `riseup-crowdfunding`.
+2. *Root Directory*: `FrontEnd` · *Framework Preset*: **Other** · sin Build Command → **Deploy**.
+3. *Settings → Git → Production Branch*: **`demo-tienda`** → *Deployments* → **Redeploy**.
+   [FrontEnd/vercel.json](FrontEnd/vercel.json) hace que `/login.html` sirva `pages/login.html`, igual que el nginx local.
+4. Copia tu URL `https://xxx.vercel.app` a `FRONTEND_URL` en `riseup-backend` (Render → *Environment*). Se redespliega solo.
 
 ## 3. Correo real con Brevo (verificación al registrarse)
 
-El backend envía por la API HTTP de Brevo cuando existe `BREVO_API_KEY` (los hostings suelen bloquear SMTP); si no existe, usa SMTP (`MAIL_SERVER`...), como en local con Mailtrap.
+El backend envía por la API HTTP de Brevo cuando existe `BREVO_API_KEY`; si no, usa SMTP (`MAIL_SERVER`...), como en local con Mailtrap.
 
 1. Crea una cuenta gratis en [brevo.com](https://www.brevo.com) (300 correos/día).
-2. **Remitente**: *Settings → Senders, domains & dedicated IPs → Senders → Add a sender* con tu Gmail. Brevo te manda un código: confírmalo.
-3. **API key**: *Settings → SMTP & API → API Keys → Generate a new API key*. Cópiala (empieza con `xkeysib-`).
-4. En Railway (servicio `backend`) pon `BREVO_API_KEY`, `MAIL_FROM` (el Gmail verificado) y `MAIL_FROM_NAME`.
-5. Prueba: regístrate desde el celular con un correo real → llega "Verifica tu cuenta" → el enlace abre `verify.html` y activa la cuenta.
+2. **Remitente**: *Settings → Senders, domains & dedicated IPs → Senders → Add a sender* con tu Gmail y confirma el código.
+3. **API key**: *Settings → SMTP & API → API Keys → Generate a new API key* (empieza con `xkeysib-`).
+4. En Render → `riseup-backend` → *Environment*: `BREVO_API_KEY` y `MAIL_FROM` (el Gmail verificado).
+5. Prueba desde el celular: regístrate con un correo real → llega "Verifica tu cuenta" → el enlace activa la cuenta.
    Si no llega, revisa **Spam** y en Brevo *Transactional → Logs*.
 
 ## 4. Usuarios de demo (contraseña `test123`)
@@ -69,10 +55,16 @@ El backend envía por la API HTTP de Brevo cuando existe `BREVO_API_KEY` (los ho
 | `juan@test.com` | Vendedor (tiene productos publicados) |
 | `maria@test.com`, `carlos@test.com` | Compradores |
 
+En el celular, en la página de pago usa **"Simular pago"** (el QR está pensado para escanearse desde otro teléfono).
+
 ## 5. Probar
 
 ```bash
-API_URL=https://<dominio-backend>.up.railway.app GATEWAY_URL=https://<dominio-gateway>.up.railway.app python3 tests/smoke_test.py
+API_URL=https://riseup-backend.onrender.com GATEWAY_URL=https://riseup-gateway.onrender.com python3 tests/smoke_test.py
 ```
 
 La prueba crea un producto "Smoke test" y compras de prueba: **no la corras sobre la base de la demo justo antes de mostrarla.**
+
+## Local
+
+`docker compose up -d --build` levanta todo (Postgres, backend, pasarela y frontend en http://localhost:8080).

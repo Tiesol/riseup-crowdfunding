@@ -64,22 +64,6 @@ services:
     depends_on:
       - backend
 
-  # Payment Gateway (MySQL)
-  gateway_db:
-    image: mysql:8.0
-    container_name: riseup_gateway_db
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_ROOT_PASSWORD: secret
-    volumes:
-      - ./payment-gateway/Database:/docker-entrypoint-initdb.d
-      - gateway_mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 30
-
   # Payment Gateway API
   gateway:
     build: ./payment-gateway/Gateway
@@ -87,18 +71,12 @@ services:
     restart: always
     environment:
       PORT: 3000
-      DB_HOST: gateway_db
-      DB_PORT: 3306
-      DB_USER: root
-      DB_PASSWORD: secret
-      DB_NAME: payments_db
+      DATABASE_URL: ${DATABASE_URL}
       PUBLIC_URL: https://dj449p7g-3002.brs.devtunnels.ms
       CONFIRMATION_HOOK_ENDPOINT: http://backend:8000/donations/confirm-payment
     ports:
       - "3002:3000"
     depends_on:
-      gateway_db:
+      db:
         condition: service_healthy
 
-volumes:
-  gateway_mysql_data:

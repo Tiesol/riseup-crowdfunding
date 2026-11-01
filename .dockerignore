@@ -1,0 +1,7 @@
+.git
+postgres_data
+graphify-out
+**/node_modules
+FrontEnd
+payment-gateway
+.env

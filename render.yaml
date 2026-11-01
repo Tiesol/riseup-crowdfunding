@@ -1,0 +1,57 @@
+# Render Blueprint: crea la base de datos, el backend y la pasarela con un clic (New → Blueprint).
+# El frontend va en Vercel (ver DEPLOY.md).
+databases:
+  - name: riseup-db
+    plan: free
+    region: virginia
+    databaseName: riseup
+    user: riseup
+
+services:
+  - type: web
+    name: riseup-backend
+    runtime: docker
+    plan: free
+    region: virginia
+    branch: demo-tienda
+    dockerContext: .
+    dockerfilePath: ./backend/Dockerfile.render
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: riseup-db
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: JWT_EXPIRATION_HOURS
+        value: "24"
+      - key: MAIL_FROM_NAME
+        value: RiseUp
+      # Se completan en el panel de Render después del primer deploy (ver DEPLOY.md)
+      - key: GATEWAY_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: BREVO_API_KEY
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+
+  - type: web
+    name: riseup-gateway
+    runtime: docker
+    plan: free
+    region: virginia
+    branch: demo-tienda
+    dockerContext: ./payment-gateway/Gateway
+    dockerfilePath: ./payment-gateway/Gateway/Dockerfile
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: riseup-db
+          property: connectionString
+      - key: CONFIRMATION_HOOK_ENDPOINT
+        sync: false

@@ -1,43 +1,39 @@
-import mysql from 'mysql2/promise';
+import pg from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const {
-  DB_HOST,
-  DB_PORT,
-  DB_USER,
-  DB_PASSWORD,
-  DB_NAME
-} = process.env;
+const { DATABASE_URL } = process.env;
 
 let pool;
 
+// Adaptador: mantiene la interfaz de mysql2 (`?` como parámetro y resultado [rows])
+// para que las rutas no cambien al usar Postgres.
+function wrap(pgPool) {
+  return {
+    async query(sql, params = []) {
+      let i = 0;
+      const text = sql.replace(/\?/g, () => `$${++i}`);
+      const result = await pgPool.query(text, params);
+      return [Object.assign(result.rows, { affectedRows: result.rowCount })];
+    }
+  };
+}
+
 export async function initDB() {
   try {
-    pool = mysql.createPool({
-      host: DB_HOST,
-      port: Number(DB_PORT),
-      user: DB_USER,
-      password: DB_PASSWORD,
-      database: DB_NAME,
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0
-    });
+    pool = wrap(new pg.Pool({ connectionString: DATABASE_URL, max: 10 }));
 
     // Crear tabla si no existe
     const createSql = `CREATE TABLE IF NOT EXISTS pagos (
       id CHAR(36) PRIMARY KEY,
-      fechaRegistro DATETIME NOT NULL,
+      "fechaRegistro" TIMESTAMP NOT NULL,
       monto DECIMAL(10,2) NOT NULL,
       estado VARCHAR(20) NOT NULL,
-      fechaPago DATETIME NULL
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+      "fechaPago" TIMESTAMP NULL
+    );`;
 
-    const conn = await pool.getConnection();
-    await conn.query(createSql);
-    conn.release();
+    await pool.query(createSql);
     console.log('Tabla pagos verificada.');
   } catch (err) {
     console.error('Error inicializando DB:', err.message);
